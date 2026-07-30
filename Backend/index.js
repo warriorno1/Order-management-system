@@ -3,6 +3,7 @@ dotenv.config();
 import http from "http";
 import app from "./app.js";
 import connectDB from "./config/connectDB.js";
+import { startLocalScheduler } from "./cron/localScheduler.js";
 
 const PORT = process.env.PORT || 3000;
 

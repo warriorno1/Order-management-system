@@ -15,6 +15,7 @@
     "express": "^5.2.1",
     "http": "^0.0.1-security",
     "mongoose": "^9.8.1",
+    "node-cron": "^4.6.0",
     "nodemon": "^3.1.14"
   }
 }
