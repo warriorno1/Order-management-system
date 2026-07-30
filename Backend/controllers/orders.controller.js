@@ -117,3 +117,50 @@ export const getOrderById = async (req, res, next) => {
     }
 };
 
+export const updateOrder = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { orderStatus, paymentStatus } = req.body;
+
+        const order = await Order.findOne({ orderId: id });
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: `Order with orderId '${id}' not found`
+            });
+        }
+
+        if (!orderStatus && !paymentStatus) {
+            return res.status(400).json({
+                success: false,
+                message: 'Provide at least one of orderStatus or paymentStatus to update'
+            });
+        }
+
+        if (orderStatus && orderStatus !== order.orderStatus) {
+            order.statusHistory.push({
+                fromStatus: order.orderStatus,
+                toStatus: orderStatus,
+                changedAt: new Date(),
+                changedBy: 'manual'
+            });
+            order.orderStatus = orderStatus;
+        }
+
+        if (paymentStatus) {
+            order.paymentStatus = paymentStatus;
+        }
+
+        const updatedOrder = await order.save();
+
+        return res.status(200).json({
+            success: true,
+            data: updatedOrder
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
